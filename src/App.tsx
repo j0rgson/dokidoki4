@@ -5,144 +5,168 @@ import { Button } from "@/components/ui/button";
 const sentences = [
   {
     jp: "きょうだいをおしえます",
+    plain: "おしえます",
     te: "おしえて",
     pl: "Uczę rodzeństwa",
     type: "verb",
   },
   {
     jp: "かんじをわすれます",
+    plain: "わすれます",
     te: "わすれて",
     pl: "Zapominam kanji",
     type: "verb",
   },
   {
     jp: "ドアをあけます",
+    plain: "あけます",
     te: "あけて",
     pl: "Otwieram drzwi",
     type: "verb",
   },
   {
     jp: "ドアをしめます",
+    plain: "しめます",
     te: "しめて",
     pl: "Zamykam drzwi",
     type: "verb",
   },
   {
     jp: "ひこうきをおります",
+    plain: "おります",
     te: "おりて",
     pl: "Wysiadam z samolotu",
     type: "verb",
   },
   {
     jp: "ろめんでんしゃにのります",
+    plain: "のります",
     te: "のって",
     pl: "Wsiadam do tramwaju",
     type: "verb",
   },
   {
     jp: "ちかてつにのります",
+    plain: "のります",
     te: "のって",
     pl: "Wsiadam do metra",
     type: "verb",
   },
   {
     jp: "でんきをつけます",
+    plain: "つけます",
     te: "つけて",
     pl: "Włączam światło",
     type: "verb",
   },
   {
     jp: "でんきをけします",
+    plain: "けします",
     te: "けして",
     pl: "Wyłączam światło",
     type: "verb",
   },
   {
     jp: "ほんをかります",
+    plain: "かります",
     te: "かりて",
     pl: "Pożyczam książkę",
     type: "verb",
   },
   {
     jp: "ほんをかします",
+    plain: "かします",
     te: "かして",
     pl: "Wypożyczam książkę (komuś)",
     type: "verb",
   },
   {
     jp: "あるきます",
+    plain: "あるきます",
     te: "あるいて",
     pl: "Idę pieszo",
     type: "verb",
   },
   {
     jp: "たばこをすいます",
+    plain: "すいます",
     te: "すって",
     pl: "Palę papierosa",
     type: "verb",
   },
   {
     jp: "こどもとあそびます",
+    plain: "あそびます",
     te: "あそんで",
     pl: "Bawię się z dzieckiem",
     type: "verb",
   },
   {
     jp: "おかあさんをてつだいます",
+    plain: "てつだいます",
     te: "てつだって",
     pl: "Pomagam mamie",
     type: "verb",
   },
   {
     jp: "しゃしんをとります",
+    plain: "とります",
     te: "とって",
     pl: "Robię zdjęcie",
     type: "verb",
   },
   {
     jp: "いそいで、ください！",
+    plain: "",
     te: "",
     pl: "Pospiesz się, proszę!",
     type: "verb",
   },
   {
     jp: "いえにはいります",
+    plain: "はいります",
     te: "はいって",
     pl: "Wchodzę do domu",
     type: "verb",
   },
   {
     jp: "だいがくにでかけます",
+    plain: "でかけます",
     te: "でかけて",
     pl: "Wychodzę na uniwersytet",
     type: "verb",
   },
   {
     jp: "にもつをもちます",
+    plain: "もちます",
     te: "もって",
     pl: "Niosę bagaż",
     type: "verb",
   },
   {
     jp: "おみやげをもってきます",
+    plain: "もってきます",
     te: "もってきて",
     pl: "Przynoszę pamiątkę",
     type: "verb",
   },
   {
     jp: "はしをつかいます",
+    plain: "つかいます",
     te: "つかって",
     pl: "Używam pałeczek",
     type: "verb",
   },
   {
     jp: "きょうかしょをもちます",
+    plain: "もちます",
     te: "もって",
     pl: "Niosę podręcznik",
     type: "verb",
   },
   {
     jp: "せんせいをつれてきます",
+    plain: "つれてきます",
     te: "つれてきて",
     pl: "Przyprowadzam nauczyciela",
     type: "verb",
@@ -155,9 +179,17 @@ export default function App() {
   const [plainAnswer, setPlainAnswer] = useState("");
   const [teAnswer, setTeAnswer] = useState("");
 
+  const normalize = (str: string) => str.trim();
+
   const checkAnswer = () => {
-    const plainOk = sentences[current].jp.includes(plainAnswer.trim());
-    const teOk = sentences[current].te === teAnswer.trim();
+    const plainOk =
+      sentences[current].plain === ""
+        ? plainAnswer.trim() === ""
+        : normalize(sentences[current].plain) === normalize(plainAnswer);
+    const teOk =
+      sentences[current].te === ""
+        ? teAnswer.trim() === ""
+        : normalize(sentences[current].te) === normalize(teAnswer);
     alert(
       `Forma zwykła: ${plainOk ? "✔️" : "❌"}\nForma て: ${teOk ? "✔️" : "❌"}`
     );
