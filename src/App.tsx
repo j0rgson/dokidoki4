@@ -1,215 +1,184 @@
-import { useState, useEffect } from "react";
-import "@fontsource/sawarabi-mincho";
+"use client";
+import { useState } from "react";
 
-const sentences = [
-  // ... bez zmian (pełna lista zdań)
+const allExamples = [
+  {
+    type: "rzeczownik",
+    sentence: "わたしは＿でんしゃにのります。",
+    answer: "えき",
+    translation: "Wsiadam do pociągu na stacji.",
+  },
+  {
+    type: "czasownik",
+    sentence: "まいにち、にほんごを＿。",
+    answer: "べんきょうします",
+    translation: "Codziennie uczę się japońskiego.",
+  },
+  {
+    type: "rzeczownik",
+    sentence: "かぞくと＿にいきます。",
+    answer: "こうえん",
+    translation: "Idę z rodziną do parku.",
+  },
+  {
+    type: "czasownik",
+    sentence: "まいにちバスでがっこうに＿。",
+    answer: "いきます",
+    translation: "Codziennie jadę autobusem do szkoły.",
+  },
+  {
+    type: "rzeczownik",
+    sentence: "わたしの＿はきょうだいです。",
+    answer: "かぞく",
+    translation: "Moja rodzina to moje rodzeństwo.",
+  },
+  {
+    type: "czasownik",
+    sentence: "まいにち、いぬと＿。",
+    answer: "さんぽします",
+    translation: "Codziennie spaceruję z psem.",
+  },
 ];
 
-function shuffleArray<T>(array: T[]): T[] {
-  const copy = [...array];
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
+function getFilteredAndShuffledExamples(type: string) {
+  const filtered = type === "wszystkie"
+    ? allExamples
+    : allExamples.filter((ex) => ex.type === type);
+
+  return filtered.sort(() => Math.random() - 0.5);
 }
 
-export default function App() {
-  const [mode, setMode] = useState<"verb" | "noun">("verb");
-  const [shuffledIndices, setShuffledIndices] = useState<number[]>(() =>
-    shuffleArray(sentences.map((_, i) => i))
-  );
-  const [current, setCurrent] = useState(0);
+export default function Home() {
+  const [mode, setMode] = useState<"czasownik" | "rzeczownik" | "wszystkie">("wszystkie");
+  const [examples, setExamples] = useState(() => getFilteredAndShuffledExamples("wszystkie"));
+  const [index, setIndex] = useState(0);
+  const [input, setInput] = useState("");
+  const [showCorrection, setShowCorrection] = useState(false);
   const [showHint, setShowHint] = useState(false);
-  const [showAnswer, setShowAnswer] = useState(false);
-  const [plainAnswer, setPlainAnswer] = useState("");
-  const [teAnswer, setTeAnswer] = useState("");
-  const [nounAnswer, setNounAnswer] = useState("");
 
-  useEffect(() => {
-    const newShuffled = shuffleArray(sentences.map((_, i) => i));
-    setShuffledIndices(newShuffled);
-    setCurrent(0);
-    setShowHint(false);
-    setShowAnswer(false);
-    setPlainAnswer("");
-    setTeAnswer("");
-    setNounAnswer("");
-  }, [mode]);
-
-  const sentence = sentences[shuffledIndices[current]];
+  const current = examples[index];
 
   const checkAnswer = () => {
-    if (mode === "verb") {
-      const plainOk = plainAnswer.trim() === sentence.verbPlain;
-      const teOk = teAnswer.trim() === sentence.verbTe;
-      alert(
-        `Forma zwykła: ${plainOk ? "✔️" : "❌"}\nForma て: ${teOk ? "✔️" : "❌"}`
-      );
-    } else {
-      const nounOk = nounAnswer.trim() === sentence.noun;
-      alert(`Rzeczownik: ${nounOk ? "✔️" : "❌"}`);
-    }
-    setShowAnswer(false);
+    setShowCorrection(true);
+    setShowHint(false);
   };
 
-  const renderSentence = () => {
-    if (mode === "verb") {
-      return (
-        <p className="text-xl font-bold text-black">
-          {sentence.noun}
-          <span className="underline border-b border-dotted w-24 inline-block align-bottom ml-1">
-            ＿＿＿＿＿＿
-          </span>
-        </p>
-      );
+  const nextQuestion = () => {
+    const nextIndex = index + 1;
+    if (nextIndex < examples.length) {
+      setIndex(nextIndex);
     } else {
-      return (
-        <p className="text-xl font-bold text-black">
-          <span className="underline border-b border-dotted w-40 inline-block align-bottom mr-1">
-            ＿＿＿＿＿＿＿＿＿＿＿＿
-          </span>
-          {sentence.verbPlain}
-        </p>
-      );
+      const newExamples = getFilteredAndShuffledExamples(mode);
+      setExamples(newExamples);
+      setIndex(0);
     }
+    setInput("");
+    setShowCorrection(false);
+    setShowHint(false);
+  };
+
+  const handleModeChange = (newMode: "czasownik" | "rzeczownik" | "wszystkie") => {
+    setMode(newMode);
+    const newExamples = getFilteredAndShuffledExamples(newMode);
+    setExamples(newExamples);
+    setIndex(0);
+    setInput("");
+    setShowCorrection(false);
+    setShowHint(false);
   };
 
   return (
-    <main className="min-h-screen bg-pink-100 max-w-xl mx-auto p-4 space-y-6 font-[\'Sawarabi Mincho\']">
+    <main className="bg-[#fef7e0] max-w-xl mx-auto p-4 space-y-6 font-sans">
       <img
         src="https://cdn.gaijinpot.com/app/uploads/sites/6/2016/02/Mount-Fuji-New.jpg"
-        alt="Fuji"
-        className="w-full max-h-64 object-cover rounded-2xl shadow-md mb-4"
+        alt="Mount Fuji"
+        className="mx-auto rounded-2xl shadow-lg max-h-48 object-cover"
       />
-      <h1 className="text-3xl font-bold text-center text-red-800 drop-shadow-sm">
-        🌸 Doki Doki Rozdział 4 🌸
-      </h1>
+      <h1 className="text-2xl font-bold text-center">Doki Doki rozdział 4</h1>
 
-      <div className="flex justify-center gap-6 mb-4">
+      <div className="flex justify-center gap-2">
         <button
-          className={`px-4 py-2 rounded transition ${
-            mode === "verb" ? "bg-blue-500 text-white" : "bg-white text-blue-700 border border-blue-300"
+          className={`px-3 py-1 rounded ${
+            mode === "czasownik" ? "bg-blue-500 text-white" : "bg-gray-200"
           }`}
-          onClick={() => setMode("verb")}
+          onClick={() => handleModeChange("czasownik")}
         >
-          Ćwicz czasownik
+          Czasowniki
         </button>
         <button
-          className={`px-4 py-2 rounded transition ${
-            mode === "noun" ? "bg-blue-500 text-white" : "bg-white text-blue-700 border border-blue-300"
+          className={`px-3 py-1 rounded ${
+            mode === "rzeczownik" ? "bg-blue-500 text-white" : "bg-gray-200"
           }`}
-          onClick={() => setMode("noun")}
+          onClick={() => handleModeChange("rzeczownik")}
         >
-          Ćwicz rzeczownik
+          Rzeczowniki
+        </button>
+        <button
+          className={`px-3 py-1 rounded ${
+            mode === "wszystkie" ? "bg-blue-500 text-white" : "bg-gray-200"
+          }`}
+          onClick={() => handleModeChange("wszystkie")}
+        >
+          Wszystkie
         </button>
       </div>
 
-      <div className="bg-white p-4 rounded shadow-md text-center">
-        {renderSentence()}
-      </div>
+      <div className="bg-white rounded-xl shadow p-4 space-y-4">
+        <p className="text-xl text-center">
+          {current.sentence.replace("＿", "_____")}
+        </p>
 
-      <div className="space-y-4 mt-4">
-        {mode === "verb" ? (
-          <>
-            <input
-              type="text"
-              placeholder="Forma zwykła (np. のります)"
-              className="w-full p-2 border rounded"
-              value={plainAnswer}
-              onChange={(e) => setPlainAnswer(e.target.value)}
-              spellCheck={false}
-              autoComplete="off"
-            />
-            <input
-              type="text"
-              placeholder="Forma て (np. のって)"
-              className="w-full p-2 border rounded"
-              value={teAnswer}
-              onChange={(e) => setTeAnswer(e.target.value)}
-              spellCheck={false}
-              autoComplete="off"
-            />
-          </>
-        ) : (
-          <input
-            type="text"
-            placeholder="Rzeczownik z partykułą (np. きょうだいを)"
-            className="w-full p-2 border rounded"
-            value={nounAnswer}
-            onChange={(e) => setNounAnswer(e.target.value)}
-            spellCheck={false}
-            autoComplete="off"
-          />
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          className="w-full p-2 border border-gray-300 rounded"
+          placeholder="Wpisz brakujące słowo"
+        />
+
+        {showCorrection && (
+          <div
+            className={`p-2 rounded text-center font-semibold ${
+              input === current.answer ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {input === current.answer
+              ? "Dobrze!"
+              : `Źle. Poprawna odpowiedź: ${current.answer}`}
+          </div>
         )}
-      </div>
 
-      <div className="flex justify-between space-x-4 mt-4">
-        <button
-          className="px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-100"
-          onClick={() => {
-            setShowHint(false);
-            setShowAnswer(false);
-            setPlainAnswer("");
-            setTeAnswer("");
-            setNounAnswer("");
-            setCurrent((c) => (c - 1 + shuffledIndices.length) % shuffledIndices.length);
-          }}
-        >
-          ← Wstecz
-        </button>
-        <button
-          className="px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-100"
-          onClick={() => {
-            setShowHint(false);
-            setShowAnswer(false);
-            setPlainAnswer("");
-            setTeAnswer("");
-            setNounAnswer("");
-            setCurrent((c) => (c + 1) % shuffledIndices.length);
-          }}
-        >
-          Dalej →
-        </button>
-      </div>
+        {showHint && !showCorrection && (
+          <div className="text-center text-gray-600">
+            Podpowiedź: {current.answer}
+          </div>
+        )}
 
-      <div className="space-x-4 mt-6 flex justify-center items-center">
-        <button
-          onClick={checkAnswer}
-          className="px-5 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-        >
-          Sprawdź
-        </button>
-        <button
-          onClick={() => setShowHint(!showHint)}
-          className="px-5 py-2 bg-blue-200 text-blue-800 rounded hover:bg-blue-300"
-        >
-          {showHint ? "Ukryj podpowiedź" : "Pokaż podpowiedź"}
-        </button>
-        <button
-          onClick={() => setShowAnswer(!showAnswer)}
-          className="px-5 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          {showAnswer ? "Ukryj odpowiedź" : "Pokaż odpowiedź"}
-        </button>
-      </div>
-
-      {showHint && (
-        <p className="mt-4 italic text-center text-gray-700">{sentence.pl}</p>
-      )}
-
-      {showAnswer && (
-        <div className="mt-4 p-4 bg-gray-100 rounded text-center font-mono">
-          {mode === "verb" ? (
-            <>
-              <p>Forma zwykła: <strong>{sentence.verbPlain}</strong></p>
-              <p>Forma て: <strong>{sentence.verbTe}</strong></p>
-            </>
-          ) : (
-            <p>Rzeczownik: <strong>{sentence.noun || "(brak)"}</strong></p>
-          )}
+        <div className="flex justify-center gap-2">
+          <button
+            onClick={checkAnswer}
+            className="bg-green-500 text-white px-4 py-2 rounded"
+          >
+            Sprawdź
+          </button>
+          <button
+            onClick={() => setShowHint(true)}
+            className="bg-yellow-400 text-black px-4 py-2 rounded"
+          >
+            Druga podpowiedź
+          </button>
+          <button
+            onClick={nextQuestion}
+            className="bg-gray-500 text-white px-4 py-2 rounded"
+          >
+            Następne
+          </button>
         </div>
-      )}
+
+        <p className="text-center text-sm text-gray-600">
+          Tłumaczenie: {current.translation}
+        </p>
+      </div>
     </main>
   );
 }
