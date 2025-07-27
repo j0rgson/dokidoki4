@@ -1,107 +1,350 @@
 import { useState } from "react";
 
 const sentences = [
-  { jp: "きょうだいをおしえます", te: "おしえて", pl: "Uczę rodzeństwa", type: "verb" },
-  { jp: "かんじをわすれます", te: "わすれて", pl: "Zapominam kanji", type: "verb" },
-  { jp: "ドアをあけます", te: "あけて", pl: "Otwieram drzwi", type: "verb" },
-  { jp: "ドアをしめます", te: "しめて", pl: "Zamykam drzwi", type: "verb" },
-  { jp: "ひこうきをおります", te: "おりて", pl: "Wysiadam z samolotu", type: "verb" },
-  { jp: "ろめんでんしゃにのります", te: "のって", pl: "Wsiadam do tramwaju", type: "verb" },
-  { jp: "ちかてつにのります", te: "のって", pl: "Wsiadam do metra", type: "verb" },
-  { jp: "でんきをつけます", te: "つけて", pl: "Włączam światło", type: "verb" },
-  { jp: "でんきをけします", te: "けして", pl: "Wyłączam światło", type: "verb" },
-  { jp: "ほんをかります", te: "かりて", pl: "Pożyczam książkę", type: "verb" },
-  { jp: "ほんをかします", te: "かして", pl: "Wypożyczam książkę (komuś)", type: "verb" },
-  { jp: "あるきます", te: "あるいて", pl: "Idę pieszo", type: "verb" },
-  { jp: "たばこをすいます", te: "すって", pl: "Palę papierosa", type: "verb" },
-  { jp: "こどもとあそびます", te: "あそんで", pl: "Bawię się z dzieckiem", type: "verb" },
-  { jp: "おかあさんをてつだいます", te: "てつだって", pl: "Pomagam mamie", type: "verb" },
-  { jp: "しゃしんをとります", te: "とって", pl: "Robię zdjęcie", type: "verb" },
-  { jp: "いそいで、ください！", te: "", pl: "Pospiesz się, proszę!", type: "verb" },
-  { jp: "いえにはいります", te: "はいって", pl: "Wchodzę do domu", type: "verb" },
-  { jp: "だいがくにでかけます", te: "でかけて", pl: "Wychodzę na uniwersytet", type: "verb" },
-  { jp: "にもつをもちます", te: "もって", pl: "Niosę bagaż", type: "verb" },
-  { jp: "おみやげをもってきます", te: "もってきて", pl: "Przynoszę pamiątkę", type: "verb" },
-  { jp: "はしをつかいます", te: "つかって", pl: "Używam pałeczek", type: "verb" },
-  { jp: "きょうかしょをもちます", te: "もって", pl: "Niosę podręcznik", type: "verb" },
-  { jp: "せんせいをつれてきます", te: "つれてきて", pl: "Przyprowadzam nauczyciela", type: "verb" },
+  {
+    full: "きょうだいをおしえます",
+    noun: "きょうだいを",
+    verbPlain: "おしえます",
+    verbTe: "おしえて",
+    pl: "Uczę rodzeństwa",
+  },
+  {
+    full: "かんじをわすれます",
+    noun: "かんじを",
+    verbPlain: "わすれます",
+    verbTe: "わすれて",
+    pl: "Zapominam kanji",
+  },
+  {
+    full: "ドアをあけます",
+    noun: "ドアを",
+    verbPlain: "あけます",
+    verbTe: "あけて",
+    pl: "Otwieram drzwi",
+  },
+  {
+    full: "ドアをしめます",
+    noun: "ドアを",
+    verbPlain: "しめます",
+    verbTe: "しめて",
+    pl: "Zamykam drzwi",
+  },
+  {
+    full: "ひこうきをおります",
+    noun: "ひこうきを",
+    verbPlain: "おります",
+    verbTe: "おりて",
+    pl: "Wysiadam z samolotu",
+  },
+  {
+    full: "ろめんでんしゃにのります",
+    noun: "ろめんでんしゃに",
+    verbPlain: "のります",
+    verbTe: "のって",
+    pl: "Wsiadam do tramwaju",
+  },
+  {
+    full: "ちかてつにのります",
+    noun: "ちかてつに",
+    verbPlain: "のります",
+    verbTe: "のって",
+    pl: "Wsiadam do metra",
+  },
+  {
+    full: "でんきをつけます",
+    noun: "でんきを",
+    verbPlain: "つけます",
+    verbTe: "つけて",
+    pl: "Włączam światło",
+  },
+  {
+    full: "でんきをけします",
+    noun: "でんきを",
+    verbPlain: "けします",
+    verbTe: "けして",
+    pl: "Wyłączam światło",
+  },
+  {
+    full: "ほんをかります",
+    noun: "ほんを",
+    verbPlain: "かります",
+    verbTe: "かりて",
+    pl: "Pożyczam książkę",
+  },
+  {
+    full: "ほんをかします",
+    noun: "ほんを",
+    verbPlain: "かします",
+    verbTe: "かして",
+    pl: "Wypożyczam książkę (komuś)",
+  },
+  {
+    full: "あるきます",
+    noun: "",
+    verbPlain: "あるきます",
+    verbTe: "あるいて",
+    pl: "Idę pieszo",
+  },
+  {
+    full: "たばこをすいます",
+    noun: "たばこを",
+    verbPlain: "すいます",
+    verbTe: "すって",
+    pl: "Palę papierosa",
+  },
+  {
+    full: "こどもとあそびます",
+    noun: "こどもと",
+    verbPlain: "あそびます",
+    verbTe: "あそんで",
+    pl: "Bawię się z dzieckiem",
+  },
+  {
+    full: "おかあさんをてつだいます",
+    noun: "おかあさんを",
+    verbPlain: "てつだいます",
+    verbTe: "てつだって",
+    pl: "Pomagam mamie",
+  },
+  {
+    full: "しゃしんをとります",
+    noun: "しゃしんを",
+    verbPlain: "とります",
+    verbTe: "とって",
+    pl: "Robię zdjęcie",
+  },
+  {
+    full: "いそいで、ください！",
+    noun: "",
+    verbPlain: "いそぐ",
+    verbTe: "いそいで",
+    pl: "Pospiesz się, proszę!",
+  },
+  {
+    full: "いえにはいります",
+    noun: "いえに",
+    verbPlain: "はいります",
+    verbTe: "はいって",
+    pl: "Wchodzę do domu",
+  },
+  {
+    full: "だいがくにでかけます",
+    noun: "だいがくに",
+    verbPlain: "でかけます",
+    verbTe: "でかけて",
+    pl: "Wychodzę na uniwersytet",
+  },
+  {
+    full: "にもつをもちます",
+    noun: "にもつを",
+    verbPlain: "もちます",
+    verbTe: "もって",
+    pl: "Niosę bagaż",
+  },
+  {
+    full: "おみやげをもってきます",
+    noun: "おみやげを",
+    verbPlain: "もってきます",
+    verbTe: "もってきて",
+    pl: "Przynoszę pamiątkę",
+  },
+  {
+    full: "はしをつかいます",
+    noun: "はしを",
+    verbPlain: "つかいます",
+    verbTe: "つかって",
+    pl: "Używam pałeczek",
+  },
+  {
+    full: "きょうかしょをもちます",
+    noun: "きょうかしょを",
+    verbPlain: "もちます",
+    verbTe: "もって",
+    pl: "Niosę podręcznik",
+  },
+  {
+    full: "せんせいをつれてきます",
+    noun: "せんせいを",
+    verbPlain: "つれてきます",
+    verbTe: "つれてきて",
+    pl: "Przyprowadzam nauczyciela",
+  },
 ];
 
 export default function App() {
+  const [mode, setMode] = useState<"verb" | "noun">("verb");
   const [current, setCurrent] = useState(0);
   const [showHint, setShowHint] = useState(false);
   const [plainAnswer, setPlainAnswer] = useState("");
   const [teAnswer, setTeAnswer] = useState("");
+  const [nounAnswer, setNounAnswer] = useState("");
 
+  const sentence = sentences[current];
+
+  // Sprawdzenie odpowiedzi w zależności od trybu
   const checkAnswer = () => {
-    const plainOk = sentences[current].jp.includes(plainAnswer.trim());
-    const teOk = sentences[current].te === teAnswer.trim();
-    alert(
-      `Forma zwykła: ${plainOk ? "✔️" : "❌"}\nForma て: ${teOk ? "✔️" : "❌"}`
-    );
+    if (mode === "verb") {
+      const plainOk = plainAnswer.trim() === sentence.verbPlain;
+      const teOk = teAnswer.trim() === sentence.verbTe;
+      alert(
+        `Forma zwykła: ${plainOk ? "✔️" : "❌"}\nForma て: ${teOk ? "✔️" : "❌"}`
+      );
+    } else {
+      // tryb noun - sprawdzamy rzeczownik
+      const nounOk = nounAnswer.trim() === sentence.noun;
+      alert(`Rzeczownik: ${nounOk ? "✔️" : "❌"}`);
+    }
+  };
+
+  // Render zdania z ukrytym czasownikiem lub rzeczownikiem
+  const renderSentence = () => {
+    if (mode === "verb") {
+      // Ukryj czasownik (verbPlain) - wyświetl noun statycznie + puste miejsce zamiast czasownika
+      return (
+        <p className="text-xl font-bold">
+          {sentence.noun}
+          <span className="underline border-b border-dotted w-24 inline-block align-bottom">
+            {/* pole do wpisania czasownika - ale to osobno w input */}
+            ＿＿＿＿＿＿
+          </span>
+        </p>
+      );
+    } else {
+      // Ukryj rzeczownik - wyświetl czasownik
+      return (
+        <p className="text-xl font-bold">
+          <span className="underline border-b border-dotted w-40 inline-block align-bottom">
+            {/* pole do wpisania rzeczownika */}
+            ＿＿＿＿＿＿＿＿＿＿＿＿
+          </span>
+          {sentence.verbPlain}
+        </p>
+      );
+    }
   };
 
   return (
     <main className="max-w-xl mx-auto p-4 space-y-6 font-sans">
-      <div className="border rounded p-6 shadow">
-        <h1 className="text-2xl font-bold mb-4">Japoński – ćwiczenie czasowników</h1>
-        <p className="text-xl mb-6">{sentences[current].jp}</p>
-        <div className="space-y-4 mb-6">
+      <h1 className="text-2xl font-bold text-center">Ćwiczenie japońskich zdań</h1>
+
+      {/* Wybór trybu */}
+      <div className="flex justify-center gap-6 mb-4">
+        <button
+          className={`px-4 py-2 rounded ${
+            mode === "verb" ? "bg-blue-600 text-white" : "bg-gray-200"
+          }`}
+          onClick={() => {
+            setMode("verb");
+            setShowHint(false);
+            setPlainAnswer("");
+            setTeAnswer("");
+            setNounAnswer("");
+          }}
+        >
+          Ćwicz czasownik
+        </button>
+        <button
+          className={`px-4 py-2 rounded ${
+            mode === "noun" ? "bg-blue-600 text-white" : "bg-gray-200"
+          }`}
+          onClick={() => {
+            setMode("noun");
+            setShowHint(false);
+            setPlainAnswer("");
+            setTeAnswer("");
+            setNounAnswer("");
+          }}
+        >
+          Ćwicz rzeczownik
+        </button>
+      </div>
+
+      {/* Zdanie */}
+      {renderSentence()}
+
+      {/* Inputy */}
+      <div className="space-y-4 mt-4">
+        {mode === "verb" ? (
+          <>
+            <input
+              type="text"
+              placeholder="Forma zwykła (np. のります)"
+              className="w-full p-2 border rounded"
+              value={plainAnswer}
+              onChange={(e) => setPlainAnswer(e.target.value)}
+              spellCheck={false}
+              autoComplete="off"
+            />
+            <input
+              type="text"
+              placeholder="Forma て (np. のって)"
+              className="w-full p-2 border rounded"
+              value={teAnswer}
+              onChange={(e) => setTeAnswer(e.target.value)}
+              spellCheck={false}
+              autoComplete="off"
+            />
+          </>
+        ) : (
           <input
             type="text"
-            placeholder="Forma zwykła (np. のります)"
+            placeholder="Rzeczownik z partykułą (np. きょうだいを)"
             className="w-full p-2 border rounded"
-            value={plainAnswer}
-            onChange={(e) => setPlainAnswer(e.target.value)}
+            value={nounAnswer}
+            onChange={(e) => setNounAnswer(e.target.value)}
+            spellCheck={false}
+            autoComplete="off"
           />
-          <input
-            type="text"
-            placeholder="Forma て (np. のって)"
-            className="w-full p-2 border rounded"
-            value={teAnswer}
-            onChange={(e) => setTeAnswer(e.target.value)}
-          />
-        </div>
+        )}
+      </div>
+
+      {/* Przyciski */}
+      <div className="flex justify-between space-x-4 mt-4">
+        <button
+          className="px-4 py-2 border rounded hover:bg-gray-100"
+          onClick={() => {
+            setShowHint(false);
+            setPlainAnswer("");
+            setTeAnswer("");
+            setNounAnswer("");
+            setCurrent((c) => (c - 1 + sentences.length) % sentences.length);
+          }}
+        >
+          ← Wstecz
+        </button>
+        <button
+          className="px-4 py-2 border rounded hover:bg-gray-100"
+          onClick={() => {
+            setShowHint(false);
+            setPlainAnswer("");
+            setTeAnswer("");
+            setNounAnswer("");
+            setCurrent((c) => (c + 1) % sentences.length);
+          }}
+        >
+          Dalej →
+        </button>
+      </div>
+
+      {/* Sprawdź i podpowiedź */}
+      <div className="space-x-4 mt-6 flex justify-center items-center">
         <button
           onClick={checkAnswer}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          className="px-5 py-2 bg-green-600 text-white rounded hover:bg-green-700"
         >
           Sprawdź
         </button>
         <button
           onClick={() => setShowHint(!showHint)}
-          className="ml-4 px-4 py-2 border rounded hover:bg-gray-100 transition"
+          className="px-5 py-2 bg-gray-300 rounded hover:bg-gray-400"
         >
           {showHint ? "Ukryj podpowiedź" : "Pokaż podpowiedź"}
         </button>
-        {showHint && (
-          <p className="mt-4 italic text-gray-700">{sentences[current].pl}</p>
-        )}
-        <div className="flex justify-between mt-6">
-          <button
-            onClick={() => {
-              setShowHint(false);
-              setPlainAnswer("");
-              setTeAnswer("");
-              setCurrent((prev) => (prev - 1 + sentences.length) % sentences.length);
-            }}
-            className="px-4 py-2 border rounded hover:bg-gray-100 transition"
-          >
-            ← Wstecz
-          </button>
-          <button
-            onClick={() => {
-              setShowHint(false);
-              setPlainAnswer("");
-              setTeAnswer("");
-              setCurrent((prev) => (prev + 1) % sentences.length);
-            }}
-            className="px-4 py-2 border rounded hover:bg-gray-100 transition"
-          >
-            Dalej →
-          </button>
-        </div>
       </div>
+
+      {showHint && (
+        <p className="mt-4 italic text-center text-gray-700">{sentence.pl}</p>
+      )}
     </main>
   );
 }
