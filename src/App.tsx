@@ -1,29 +1,29 @@
 import { useState, useEffect } from "react";
 
 const sentences = [
-  { noun: "きょうだいを", verbPlain: "おしえます", verbTe: "おしえて", pl: "" },
-  { noun: "かんじを", verbPlain: "わすれます", verbTe: "わすれて", pl: "" },
-  { noun: "ドアを", verbPlain: "あけます", verbTe: "あけて", pl: "" },
-  { noun: "ドアを", verbPlain: "しめます", verbTe: "しめて", pl: "" },
-  { noun: "ひこうきを", verbPlain: "おります", verbTe: "おりて", pl: "" },
-  { noun: "ろめんでんしゃに", verbPlain: "のります", verbTe: "のって", pl: "" },
-  { noun: "でんきを", verbPlain: "つけます", verbTe: "つけて", pl: "" },
-  { noun: "でんきを", verbPlain: "けします", verbTe: "けして", pl: "" },
-  { noun: "ほんを", verbPlain: "かります", verbTe: "かりて", pl: "" },
-  { noun: "ほんを", verbPlain: "かします", verbTe: "かして", pl: "" },
-  { noun: "", verbPlain: "あるきます", verbTe: "あるいて", pl: "" },
-  { noun: "たばこを", verbPlain: "すいます", verbTe: "すって", pl: "" },
-  { noun: "こどもと", verbPlain: "あそびます", verbTe: "あそって", pl: "" },
-  { noun: "おかあさんを", verbPlain: "てつだいます", verbTe: "てつだって", pl: "" },
-  { noun: "しゃしんを", verbPlain: "とります", verbTe: "とって", pl: "" },
-  { noun: "", verbPlain: "いそいで、ください！", verbTe: "", pl: "" },
-  { noun: "いえに", verbPlain: "はいります", verbTe: "はいって", pl: "" },
-  { noun: "だいがくに", verbPlain: "でかけます", verbTe: "でかけて", pl: "" },
-  { noun: "にもつを", verbPlain: "もちます", verbTe: "もって", pl: "" },
-  { noun: "おみやげを", verbPlain: "もってきます", verbTe: "もってきて", pl: "" },
-  { noun: "はしを", verbPlain: "つかいます", verbTe: "つかって", pl: "" },
-  { noun: "きょうかしょを", verbPlain: "もちます", verbTe: "もって", pl: "" },
-  { noun: "せんせいを", verbPlain: "つれてきます", verbTe: "つれてきて", pl: "" },
+  { noun: "きょうだいを", verbPlain: "おしえます", verbTe: "おしえて", pl: "Uczę rodzeństwo." },
+  { noun: "かんじを", verbPlain: "わすれます", verbTe: "わすれて", pl: "Zapominam kanji." },
+  { noun: "ドアを", verbPlain: "あけます", verbTe: "あけて", pl: "Otwieram drzwi." },
+  { noun: "ドアを", verbPlain: "しめます", verbTe: "しめて", pl: "Zamykam drzwi." },
+  { noun: "ひこうきを", verbPlain: "おります", verbTe: "おりて", pl: "Wysiadać z samolotu." },
+  { noun: "ろめんでんしゃに", verbPlain: "のります", verbTe: "のって", pl: "Wsiadać do tramwaju." },
+  { noun: "でんきを", verbPlain: "つけます", verbTe: "つけて", pl: "Włączać światło." },
+  { noun: "でんきを", verbPlain: "けします", verbTe: "けして", pl: "Wyłączać światło." },
+  { noun: "ほんを", verbPlain: "かります", verbTe: "かりて", pl: "Pożyczać książkę." },
+  { noun: "ほんを", verbPlain: "かします", verbTe: "かして", pl: "Pożyczać komuś książkę." },
+  { noun: "", verbPlain: "あるきます", verbTe: "あるいて", pl: "Chodzić pieszo." },
+  { noun: "たばこを", verbPlain: "すいます", verbTe: "すって", pl: "Palić papierosa." },
+  { noun: "こどもと", verbPlain: "あそびます", verbTe: "あそって", pl: "Bawić się z dziećmi." },
+  { noun: "おかあさんを", verbPlain: "てつだいます", verbTe: "てつだって", pl: "Pomagać mamie." },
+  { noun: "しゃしんを", verbPlain: "とります", verbTe: "とって", pl: "Robić zdjęcia." },
+  { noun: "", verbPlain: "いそいで、ください！", verbTe: "", pl: "Proszę się spieszyć!" },
+  { noun: "いえに", verbPlain: "はいります", verbTe: "はいって", pl: "Wchodzić do domu." },
+  { noun: "だいがくに", verbPlain: "でかけます", verbTe: "でかけて", pl: "Wychodzić na uniwersytet." },
+  { noun: "にもつを", verbPlain: "もちます", verbTe: "もって", pl: "Trzymać bagaż." },
+  { noun: "おみやげを", verbPlain: "もってきます", verbTe: "もってきて", pl: "Przynosić pamiątki." },
+  { noun: "はしを", verbPlain: "つかいます", verbTe: "つかって", pl: "Używać pałeczek." },
+  { noun: "きょうかしょを", verbPlain: "もちます", verbTe: "もって", pl: "Trzymać podręcznik." },
+  { noun: "せんせいを", verbPlain: "つれてきます", verbTe: "つれてきて", pl: "Przyprowadzać nauczyciela." },
 ];
 
 function shuffleArray<T>(array: T[]): T[] {
@@ -118,9 +118,12 @@ export default function App() {
         <img
           src="https://cdn.gaijinpot.com/app/uploads/sites/6/2016/02/Mount-Fuji-New.jpg"
           alt="Mount Fuji"
-          className="imageFuji"
+          className="banner"
+          style={{ height: 300, objectFit: "cover", borderRadius: 12 }}
         />
-        <h1>🌸 Doki Doki Rozdział 4 🌸</h1>
+        <h1 className="text-red-800" style={{ fontWeight: "bold", fontSize: 32 }}>
+          🌸 Doki Doki Rozdział 4 🌸
+        </h1>
       </header>
 
       <main className="main">
@@ -176,7 +179,7 @@ export default function App() {
           )}
         </div>
 
-        <div>
+        <div style={{ marginTop: 20 }}>
           <button
             className="btnSecondary"
             onClick={() => {
@@ -208,27 +211,32 @@ export default function App() {
           </button>
         </div>
 
-        <div>
+        <div style={{ marginTop: 24 }}>
           <button className="btnGreen" onClick={checkAnswer}>
             Sprawdź
           </button>
 
-          <button className="btnSecondary" onClick={() => setShowHint((v) => !v)}>
+          <button
+            className="btnSecondary"
+            onClick={() => setShowHint((v) => !v)}
+            style={{ marginLeft: 10 }}
+          >
             {showHint ? "Ukryj podpowiedź" : "Pokaż podpowiedź"}
           </button>
 
           <button
             className="btnSecondary"
             onClick={() => setShowAnswer((v) => !v)}
+            style={{ marginLeft: 10 }}
           >
             {showAnswer ? "Ukryj odpowiedź" : "Pokaż odpowiedź"}
           </button>
         </div>
 
-        {showHint && <p className="hint-text">{sentence.pl}</p>}
+        {showHint && <p className="hint">{sentence.pl}</p>}
 
         {showAnswer && (
-          <div className="answer-box">
+          <div className="answer">
             {mode === "verb" ? (
               <>
                 <p>
