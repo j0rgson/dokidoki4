@@ -1,448 +1,220 @@
-import { useState, useEffect, useRef } from "react";
-import "./App.css";
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
-type DataItem = {
-  sentence: string;
-  answer: string;
-  romaji: string;
-  translation: string;
-};
-
-const DATA: DataItem[] = [
+const sentences = [
   {
-    sentence: "わたしの＿＿はかわいいです。",
-    answer: "いぬ",
-    romaji: "watashi no inu wa kawaii desu",
-    translation: "Mój pies jest słodki.",
+    jp: "きょうだいをおしえます",
+    te: "おしえて",
+    pl: "Uczę rodzeństwa",
+    type: "verb",
   },
   {
-    sentence: "＿＿をかきました。",
-    answer: "え",
-    romaji: "e wo kakimashita",
-    translation: "Namalowałem obraz.",
+    jp: "かんじをわすれます",
+    te: "わすれて",
+    pl: "Zapominam kanji",
+    type: "verb",
   },
   {
-    sentence: "＿＿にメールをおくりました。",
-    answer: "スマホ",
-    romaji: "sumaho ni meeru wo okurimashita",
-    translation: "Wysłałem e-mail na smartfon.",
+    jp: "ドアをあけます",
+    te: "あけて",
+    pl: "Otwieram drzwi",
+    type: "verb",
   },
   {
-    sentence: "きょうだいは＿＿にいます。",
-    answer: "いっしょ",
-    romaji: "kyoudai wa issho ni imasu",
-    translation: "Rodzeństwo jest razem.",
+    jp: "ドアをしめます",
+    te: "しめて",
+    pl: "Zamykam drzwi",
+    type: "verb",
   },
   {
-    sentence: "＿＿でんきをつけてください。",
-    answer: "でんき",
-    romaji: "denki wo tsukete kudasai",
-    translation: "Proszę włącz światło.",
+    jp: "ひこうきをおります",
+    te: "おりて",
+    pl: "Wysiadam z samolotu",
+    type: "verb",
   },
   {
-    sentence: "たんじょうびに＿＿をもらいました。",
-    answer: "プレゼント",
-    romaji: "tanjoubi ni purezento wo moraimashita",
-    translation: "Dostałem prezent na urodziny.",
+    jp: "ろめんでんしゃにのります",
+    te: "のって",
+    pl: "Wsiadam do tramwaju",
+    type: "verb",
   },
   {
-    sentence: "まいにち＿＿をつかいます。",
-    answer: "パソコン",
-    romaji: "mainichi pasokon wo tsukaimasu",
-    translation: "Codziennie używam komputera.",
+    jp: "ちかてつにのります",
+    te: "のって",
+    pl: "Wsiadam do metra",
+    type: "verb",
   },
   {
-    sentence: "あしたは＿＿にいきます。",
-    answer: "プール",
-    romaji: "ashita wa puuru ni ikimasu",
-    translation: "Jutro idę na basen.",
+    jp: "でんきをつけます",
+    te: "つけて",
+    pl: "Włączam światło",
+    type: "verb",
   },
   {
-    sentence: "きのう、＿＿でえいがをみました。",
-    answer: "クラス",
-    romaji: "kinou kurasu de eiga wo mimashita",
-    translation: "Wczoraj na zajęciach oglądałem film.",
+    jp: "でんきをけします",
+    te: "けして",
+    pl: "Wyłączam światło",
+    type: "verb",
   },
   {
-    sentence: "＿＿にでんしゃでいきました。",
-    answer: "まち",
-    romaji: "machi ni densha de ikimashita",
-    translation: "Pojechałem pociągiem do miasta.",
+    jp: "ほんをかります",
+    te: "かりて",
+    pl: "Pożyczam książkę",
+    type: "verb",
   },
   {
-    sentence: "＿＿をおしえてください。",
-    answer: "さくぶん",
-    romaji: "sakubun wo oshiete kudasai",
-    translation: "Proszę naucz mnie wypracowania.",
+    jp: "ほんをかします",
+    te: "かして",
+    pl: "Wypożyczam książkę (komuś)",
+    type: "verb",
   },
   {
-    sentence: "＿＿はたくさんあります。",
-    answer: "にもつ",
-    romaji: "nimotsu wa takusan arimasu",
-    translation: "Mam dużo bagażu.",
+    jp: "あるきます",
+    te: "あるいて",
+    pl: "Idę pieszo",
+    type: "verb",
   },
   {
-    sentence: "＿＿をとってください。",
-    answer: "カメラ",
-    romaji: "kamera wo totte kudasai",
-    translation: "Zrób zdjęcie aparatem.",
+    jp: "たばこをすいます",
+    te: "すって",
+    pl: "Palę papierosa",
+    type: "verb",
   },
   {
-    sentence: "この＿＿はおもしろいです。",
-    answer: "きょうかしょ",
-    romaji: "kono kyoukasho wa omoshiroi desu",
-    translation: "Ten podręcznik jest ciekawy.",
+    jp: "こどもとあそびます",
+    te: "あそんで",
+    pl: "Bawię się z dzieckiem",
+    type: "verb",
   },
   {
-    sentence: "＿＿をかりたいです。",
-    answer: "きっぷ",
-    romaji: "kippu wo karitai desu",
-    translation: "Chcę pożyczyć bilet.",
+    jp: "おかあさんをてつだいます",
+    te: "てつだって",
+    pl: "Pomagam mamie",
+    type: "verb",
   },
   {
-    sentence: "かれは＿＿をもってきました。",
-    answer: "おみやげ",
-    romaji: "kare wa omiyage wo motte kimashita",
-    translation: "On przyniósł pamiątkę z podróży.",
-  },
-
-  // Czasowniki
-  {
-    sentence: "せんせいが＿＿をおしえます。",
-    answer: "にほんご",
-    romaji: "sensei ga nihongo wo oshiemasu",
-    translation: "Nauczyciel uczy japońskiego.",
+    jp: "しゃしんをとります",
+    te: "とって",
+    pl: "Robię zdjęcie",
+    type: "verb",
   },
   {
-    sentence: "きょうは＿＿をはじめます。",
-    answer: "クラス",
-    romaji: "kyou wa kurasu wo hajimemasu",
-    translation: "Dziś zaczynam zajęcia.",
+    jp: "いそいで、ください！",
+    te: "",
+    pl: "Pospiesz się, proszę!",
+    type: "verb",
   },
   {
-    sentence: "かばんを＿＿のをわすれました。",
-    answer: "もつ",
-    romaji: "kaban wo motsu no wo wasuremashita",
-    translation: "Zapomniałem trzymać torbę.",
+    jp: "いえにはいります",
+    te: "はいって",
+    pl: "Wchodzę do domu",
+    type: "verb",
   },
   {
-    sentence: "あそぶのがすきです。",
-    answer: "あそぶ",
-    romaji: "asobu no ga suki desu",
-    translation: "Lubię się bawić.",
+    jp: "だいがくにでかけます",
+    te: "でかけて",
+    pl: "Wychodzę na uniwersytet",
+    type: "verb",
   },
   {
-    sentence: "ドアを＿＿ください。",
-    answer: "しめる",
-    romaji: "doa wo shimeru kudasai",
-    translation: "Proszę zamknąć drzwi.",
+    jp: "にもつをもちます",
+    te: "もって",
+    pl: "Niosę bagaż",
+    type: "verb",
   },
   {
-    sentence: "しゃしんを＿＿。",
-    answer: "とる",
-    romaji: "shashin wo toru",
-    translation: "Robić zdjęcie.",
+    jp: "おみやげをもってきます",
+    te: "もってきて",
+    pl: "Przynoszę pamiątkę",
+    type: "verb",
   },
   {
-    sentence: "でんしゃから＿＿。",
-    answer: "おりる",
-    romaji: "densha kara oriru",
-    translation: "Wysiadać z pociągu.",
+    jp: "はしをつかいます",
+    te: "つかって",
+    pl: "Używam pałeczek",
+    type: "verb",
   },
   {
-    sentence: "バスを＿＿。",
-    answer: "まつ",
-    romaji: "basu wo matsu",
-    translation: "Czekać na autobus.",
+    jp: "きょうかしょをもちます",
+    te: "もって",
+    pl: "Niosę podręcznik",
+    type: "verb",
   },
   {
-    sentence: "じてんしゃに＿＿。",
-    answer: "のる",
-    romaji: "jitensha ni noru",
-    translation: "Jechać na rowerze.",
-  },
-  {
-    sentence: "いそいで＿＿！",
-    answer: "いそぐ",
-    romaji: "isoide isogu",
-    translation: "Spiesz się!",
-  },
-  {
-    sentence: "でんきを＿＿。",
-    answer: "けす",
-    romaji: "denki wo kesu",
-    translation: "Wyłączyć światło.",
-  },
-  {
-    sentence: "かさを＿＿。",
-    answer: "もつ",
-    romaji: "kasa wo motsu",
-    translation: "Trzymać parasol.",
-  },
-  {
-    sentence: "ともだちを＿＿。",
-    answer: "つれてくる",
-    romaji: "tomodachi wo tsuretekuru",
-    translation: "Przyprowadzić przyjaciela.",
-  },
-  {
-    sentence: "ほんを＿＿。",
-    answer: "かりる",
-    romaji: "hon wo kariru",
-    translation: "Pożyczać książkę.",
-  },
-  {
-    sentence: "おかねを＿＿。",
-    answer: "かす",
-    romaji: "okane wo kasu",
-    translation: "Pożyczać pieniądze.",
-  },
-  {
-    sentence: "こうえんを＿＿。",
-    answer: "あるく",
-    romaji: "kouen wo aruku",
-    translation: "Chodzić po parku.",
-  },
-  {
-    sentence: "みずのなかで＿＿。",
-    answer: "およぐ",
-    romaji: "mizu no naka de oyogu",
-    translation: "Pływać w wodzie.",
-  },
-
-  // Słowa z transportu i miejsca
-  {
-    sentence: "＿＿でバスにのりました。",
-    answer: "バスてい",
-    romaji: "basu tei de basu ni norimashita",
-    translation: "Wsiadłem do autobusu na przystanku.",
-  },
-  {
-    sentence: "＿＿はやいです。",
-    answer: "しんかんせん",
-    romaji: "shinkansen wa hayai desu",
-    translation: "Shinkansen jest szybki.",
-  },
-  {
-    sentence: "＿＿ででんしゃをまちます。",
-    answer: "えき",
-    romaji: "eki de densha wo machimasu",
-    translation: "Czekam na pociąg na stacji.",
-  },
-  {
-    sentence: "ひこうきで＿＿にいきます。",
-    answer: "とうきょう",
-    romaji: "hikouki de toukyou ni ikimasu",
-    translation: "Lecę samolotem do Tokio.",
-  },
-  {
-    sentence: "＿＿をあるいていきます。",
-    answer: "みち",
-    romaji: "michi wo aruite ikimasu",
-    translation: "Idę pieszo ulicą.",
-  },
-
-  // Kilka dodatkowych z Twojej listy
-  {
-    sentence: "おふろに＿＿かんはいりました。",
-    answer: "2",
-    romaji: "ofuro ni ni jikan hairimashita",
-    translation: "Wszedłem do wanny na 2 godziny.",
-  },
-  {
-    sentence: "さっき＿＿をたべました。",
-    answer: "ごはん",
-    romaji: "sakki gohan wo tabemashita",
-    translation: "Wcześniej zjadłem ryż.",
-  },
-  {
-    sentence: "たくさんの＿＿があります。",
-    answer: "もの",
-    romaji: "takusan no mono ga arimasu",
-    translation: "Jest dużo rzeczy.",
+    jp: "せんせいをつれてきます",
+    te: "つれてきて",
+    pl: "Przyprowadzam nauczyciela",
+    type: "verb",
   },
 ];
 
-
-export default function ClozePractice() {
-  const [mode, setMode] = useState<"practice" | "test" | "review">("practice");
-  const [testData, setTestData] = useState<DataItem[]>([]);
-  const [index, setIndex] = useState(0);
-  const [userInput, setUserInput] = useState("");
-  const [showAnswer, setShowAnswer] = useState(false);
+export default function App() {
+  const [current, setCurrent] = useState(0);
   const [showHint, setShowHint] = useState(false);
-  const [wrongAnswers, setWrongAnswers] = useState<DataItem[]>([]);
-  const [score, setScore] = useState(0);
-  const [shakeInput, setShakeInput] = useState(false);
-  const [musicOn, setMusicOn] = useState(true);
-
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const audioStartedRef = useRef(false);
-
-  useEffect(() => {
-    if (musicOn && audioStartedRef.current) {
-      audioRef.current?.play().catch(() => {});
-    } else {
-      audioRef.current?.pause();
-    }
-  }, [musicOn]);
-
-  const current = (mode === "practice" ? DATA : testData)[index];
-
-  const startTest = (reviewMode = false) => {
-    const source = reviewMode ? wrongAnswers : DATA;
-    const shuffled = [...source].sort(() => Math.random() - 0.5).slice(0, 10);
-    setTestData(shuffled);
-    setIndex(0);
-    setScore(0);
-    setWrongAnswers([]);
-    setUserInput("");
-    setShowAnswer(false);
-    setShowHint(false);
-    setMode(reviewMode ? "review" : "test");
-  };
+  const [plainAnswer, setPlainAnswer] = useState("");
+  const [teAnswer, setTeAnswer] = useState("");
 
   const checkAnswer = () => {
-    if (!audioStartedRef.current) {
-      audioRef.current?.play().catch(() => {});
-      audioStartedRef.current = true;
-    }
-
-    const correct = userInput.trim() === current.answer;
-    if (!correct) {
-      setWrongAnswers([...wrongAnswers, current]);
-      setShakeInput(true);
-    }
-    if (mode === "test" || mode === "review") {
-      if (correct) setScore(score + 1);
-    }
-    setShowAnswer(true);
-    setShowHint(false);
-  };
-
-  const nextSentence = () => {
-    if (mode === "practice") {
-      const next = Math.floor(Math.random() * DATA.length);
-      setIndex(next);
-      setUserInput("");
-      setShowAnswer(false);
-      setShowHint(false);
-    } else {
-      if (index + 1 >= testData.length) {
-        setMode("practice");
-      } else {
-        setIndex(index + 1);
-        setUserInput("");
-        setShowAnswer(false);
-        setShowHint(false);
-      }
-    }
-  };
-  
-
-  const onAnimationEnd = () => {
-    if (shakeInput) setShakeInput(false);
+    const plainOk = sentences[current].jp.includes(plainAnswer.trim());
+    const teOk = sentences[current].te === teAnswer.trim();
+    alert(
+      `Forma zwykła: ${plainOk ? "✔️" : "❌"}\nForma て: ${teOk ? "✔️" : "❌"}`
+    );
   };
 
   return (
-    <div className="app-container">
-      <audio ref={audioRef} src="/zelda.mp3" loop preload="auto" />
-      <header className="header">
-        <img
-          src="https://cdn.gaijinpot.com/app/uploads/sites/6/2016/02/Mount-Fuji-New.jpg"
-          alt="Mount Fuji"
-          className="banner"
-        />
-        <h1>📝 Doki Doki 4 Quiz</h1>
-        <p className="subtitle">
-          <br />
-          Uzupełnij brakujące słowo (tylko hiragana i katakana). <br />
-          Możesz użyć podpowiedzi w języku polskim.
-        </p>
-        <button
-          className="music-button"
-          onClick={() => setMusicOn((prev) => !prev)}
-          aria-label="Toggle music"
-          type="button"
-        >
-          {musicOn ? "🔈 Wyłącz muzykę" : "🔇 Włącz muzykę"}
-        </button>
-        <h2>
-          {mode === "practice"
-            ? "Tryb ćwiczenia"
-            : mode === "test"
-            ? `Test — pytanie ${index + 1}/${testData.length}`
-            : "Test z błędnych odpowiedzi"}
-        </h2>
-      </header>
-      <main className="main">
-        <p className="question">{current.sentence.replace("＿＿", "_____")}</p>
-        <input
-          type="text"
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-          placeholder="Wpisz brakujące słowo"
-          className={`input ${shakeInput ? "shake" : ""}`}
-          onAnimationEnd={onAnimationEnd}
-        />
-        {!showAnswer && (
-          <button className="hint-button" onClick={() => setShowHint(true)}>
-            Pokaż podpowiedź po polsku
-          </button>
-        )}
-        {showHint && <div className="hint">Tłumaczenie: {current.translation}</div>}
-        {showAnswer && (
-          <div
-            className={`answer ${
-              userInput === current.answer ? "correct" : "incorrect"
-            }`}
-          >
-            {userInput === current.answer ? "Dobrze! 🎉" : "Spróbuj jeszcze raz 😞"}
-            <br />
-            Poprawna odpowiedź: {current.answer}
-            <br />
-            Romaji: {current.romaji}
-            <br />
-            Tłumaczenie: {current.translation}
+    <main className="max-w-xl mx-auto p-4 space-y-4">
+      <Card>
+        <CardContent className="p-4 space-y-4">
+          <p className="text-xl font-bold">{sentences[current].jp}</p>
+          <div className="space-y-2">
+            <input
+              type="text"
+              placeholder="Forma zwykła (np. のります)"
+              className="w-full p-2 border rounded"
+              value={plainAnswer}
+              onChange={(e) => setPlainAnswer(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Forma て (np. のって)"
+              className="w-full p-2 border rounded"
+              value={teAnswer}
+              onChange={(e) => setTeAnswer(e.target.value)}
+            />
           </div>
-        )}
-        <div className="controls">
-          {!showAnswer ? (
-            <button className="action-button" onClick={checkAnswer}>
-              Sprawdź
-            </button>
-          ) : (
-            <button className="action-button" onClick={nextSentence}>
-              {index + 1 >= (mode === "practice" ? DATA : testData).length
-                ? mode === "practice"
-                  ? "Losuj kolejne"
-                  : "Zakończ test"
-                : "Następne"}
-            </button>
-          )}
-        </div>
-        {mode !== "test" && mode !== "review" && (
-          <div className="test-controls">
-            <button className="test-button" onClick={() => startTest(false)}>
-              Rozpocznij test (10 pytań)
-            </button>
-            {wrongAnswers.length > 0 && (
-              <button className="test-button" onClick={() => startTest(true)}>
-                Test z błędnych ({wrongAnswers.length})
-              </button>
-            )}
+          <Button onClick={checkAnswer}>Sprawdź</Button>
+          <Button variant="secondary" onClick={() => setShowHint(!showHint)}>
+            {showHint ? "Ukryj podpowiedź" : "Pokaż podpowiedź"}
+          </Button>
+          {showHint && <p className="italic">{sentences[current].pl}</p>}
+          <div className="flex justify-between">
+            <Button
+              onClick={() => {
+                setShowHint(false);
+                setPlainAnswer("");
+                setTeAnswer("");
+                setCurrent((prev) => (prev - 1 + sentences.length) % sentences.length);
+              }}
+              variant="outline"
+            >
+              ← Wstecz
+            </Button>
+            <Button
+              onClick={() => {
+                setShowHint(false);
+                setPlainAnswer("");
+                setTeAnswer("");
+                setCurrent((prev) => (prev + 1) % sentences.length);
+              }}
+              variant="outline"
+            >
+              Dalej →
+            </Button>
           </div>
-        )}
-        {mode !== "practice" && index + 1 >= testData.length && (
-          <div className="score">
-            <strong>
-              Wynik: {score} / {testData.length}
-            </strong>
-          </div>
-        )}
-      </main>
-    </div>
+        </CardContent>
+      </Card>
+    </main>
   );
 }
-
-
