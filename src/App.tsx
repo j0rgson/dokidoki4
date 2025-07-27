@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import "@fontsource/sawarabi-mincho";
 
 const sentences = [
   {
@@ -172,6 +171,7 @@ const sentences = [
   },
 ];
 
+// Funkcja do losowego tasowania tablicy (Fisher-Yates)
 function shuffleArray<T>(array: T[]): T[] {
   const copy = [...array];
   for (let i = copy.length - 1; i > 0; i--) {
@@ -244,46 +244,57 @@ export default function App() {
 
   return (
     <main
-      className="min-h-screen max-w-xl mx-auto p-4 space-y-6 font-[\'Sawarabi Mincho\']"
-      style={{ backgroundColor: "#f9c1d1" }} // delikatny róż 花見
+      className="min-h-screen max-w-xl mx-auto p-4 space-y-6"
+      style={{ backgroundColor: "#f8d7da", fontFamily: "'Sawarabi Mincho', serif" }}
     >
       <img
         src="https://cdn.gaijinpot.com/app/uploads/sites/6/2016/02/Mount-Fuji-New.jpg"
         alt="Fuji"
-        className="w-full object-cover rounded-2xl shadow-md mb-4"
-        style={{ height: "300px" }}
+        style={{ width: "100%", height: 300, objectFit: "cover", borderRadius: 16, boxShadow: "0 4px 8px rgba(0,0,0,0.2)" }}
+        className="mb-4"
       />
-      <h1 className="text-3xl font-bold text-center text-red-800 drop-shadow-sm">
+      <h1
+        className="text-3xl font-bold text-center mb-4"
+        style={{ color: "#880e4f", textShadow: "1px 1px 3px rgba(0,0,0,0.3)" }}
+      >
         🌸 Doki Doki Rozdział 4 🌸
       </h1>
 
+      {/* Tryb */}
       <div className="flex justify-center gap-6 mb-4">
         <button
-          className={`px-4 py-2 rounded transition font-semibold ${
-            mode === "verb"
-              ? "bg-blue-400 text-white hover:bg-blue-500"
-              : "bg-blue-100 text-blue-700 hover:bg-blue-200"
-          }`}
+          className={`px-4 py-2 rounded transition`}
+          style={{
+            backgroundColor: mode === "verb" ? "#81d4fa" : "white",
+            color: mode === "verb" ? "white" : "#0277bd",
+            border: mode === "verb" ? "none" : "1px solid #81d4fa",
+          }}
           onClick={() => setMode("verb")}
         >
           Ćwicz czasownik
         </button>
         <button
-          className={`px-4 py-2 rounded transition font-semibold ${
-            mode === "noun"
-              ? "bg-blue-400 text-white hover:bg-blue-500"
-              : "bg-blue-100 text-blue-700 hover:bg-blue-200"
-          }`}
+          className={`px-4 py-2 rounded transition`}
+          style={{
+            backgroundColor: mode === "noun" ? "#81d4fa" : "white",
+            color: mode === "noun" ? "white" : "#0277bd",
+            border: mode === "noun" ? "none" : "1px solid #81d4fa",
+          }}
           onClick={() => setMode("noun")}
         >
           Ćwicz rzeczownik
         </button>
       </div>
 
-      <div className="bg-white p-4 rounded shadow-md text-center">
+      {/* Zdanie */}
+      <div
+        className="p-4 rounded shadow-md text-center"
+        style={{ backgroundColor: "white", color: "black" }}
+      >
         {renderSentence()}
       </div>
 
+      {/* Inputy */}
       <div className="space-y-4 mt-4">
         {mode === "verb" ? (
           <>
@@ -319,6 +330,7 @@ export default function App() {
         )}
       </div>
 
+      {/* Nawigacja */}
       <div className="flex justify-between space-x-4 mt-4">
         <button
           className="px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-100"
@@ -328,9 +340,7 @@ export default function App() {
             setPlainAnswer("");
             setTeAnswer("");
             setNounAnswer("");
-            setCurrent(
-              (c) => (c - 1 + shuffledIndices.length) % shuffledIndices.length
-            );
+            setCurrent((c) => (c - 1 + shuffledIndices.length) % shuffledIndices.length);
           }}
         >
           ← Wstecz
@@ -350,6 +360,7 @@ export default function App() {
         </button>
       </div>
 
+      {/* Sprawdź, podpowiedź, odpowiedź */}
       <div className="space-x-4 mt-6 flex justify-center items-center">
         <button
           onClick={checkAnswer}
@@ -371,28 +382,6 @@ export default function App() {
         </button>
       </div>
 
+      {/* Podpowiedź */}
       {showHint && (
-        <p className="mt-4 italic text-center text-gray-700">{sentence.pl}</p>
-      )}
-
-      {showAnswer && (
-        <div className="mt-4 p-4 bg-gray-100 rounded text-center font-mono">
-          {mode === "verb" ? (
-            <>
-              <p>
-                Forma zwykła: <strong>{sentence.verbPlain}</strong>
-              </p>
-              <p>
-                Forma て: <strong>{sentence.verbTe}</strong>
-              </p>
-            </>
-          ) : (
-            <p>
-              Rzeczownik: <strong>{sentence.noun || "(brak)"}</strong>
-            </p>
-          )}
-        </div>
-      )}
-    </main>
-  );
-}
+        <p
