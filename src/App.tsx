@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const sentences = [
   {
@@ -171,15 +171,39 @@ const sentences = [
   },
 ];
 
+// Funkcja do losowego tasowania tablicy (Fisher-Yates)
+function shuffleArray<T>(array: T[]): T[] {
+  const copy = [...array];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
 export default function App() {
   const [mode, setMode] = useState<"verb" | "noun">("verb");
+  const [shuffledIndices, setShuffledIndices] = useState<number[]>(() =>
+    shuffleArray(sentences.map((_, i) => i))
+  );
   const [current, setCurrent] = useState(0);
   const [showHint, setShowHint] = useState(false);
   const [plainAnswer, setPlainAnswer] = useState("");
   const [teAnswer, setTeAnswer] = useState("");
   const [nounAnswer, setNounAnswer] = useState("");
 
-  const sentence = sentences[current];
+  // Resetuj shuffledIndices i current przy zmianie trybu
+  useEffect(() => {
+    const newShuffled = shuffleArray(sentences.map((_, i) => i));
+    setShuffledIndices(newShuffled);
+    setCurrent(0);
+    setShowHint(false);
+    setPlainAnswer("");
+    setTeAnswer("");
+    setNounAnswer("");
+  }, [mode]);
+
+  const sentence = sentences[shuffledIndices[current]];
 
   // Sprawdzenie odpowiedzi w zależności od trybu
   const checkAnswer = () => {
@@ -199,22 +223,18 @@ export default function App() {
   // Render zdania z ukrytym czasownikiem lub rzeczownikiem
   const renderSentence = () => {
     if (mode === "verb") {
-      // Ukryj czasownik (verbPlain) - wyświetl noun statycznie + puste miejsce zamiast czasownika
       return (
         <p className="text-xl font-bold">
           {sentence.noun}
-          <span className="underline border-b border-dotted w-24 inline-block align-bottom">
-            {/* pole do wpisania czasownika - ale to osobno w input */}
+          <span className="underline border-b border-dotted w-24 inline-block align-bottom ml-1">
             ＿＿＿＿＿＿
           </span>
         </p>
       );
     } else {
-      // Ukryj rzeczownik - wyświetl czasownik
       return (
         <p className="text-xl font-bold">
-          <span className="underline border-b border-dotted w-40 inline-block align-bottom">
-            {/* pole do wpisania rzeczownika */}
+          <span className="underline border-b border-dotted w-40 inline-block align-bottom mr-1">
             ＿＿＿＿＿＿＿＿＿＿＿＿
           </span>
           {sentence.verbPlain}
@@ -233,13 +253,7 @@ export default function App() {
           className={`px-4 py-2 rounded ${
             mode === "verb" ? "bg-blue-600 text-white" : "bg-gray-200"
           }`}
-          onClick={() => {
-            setMode("verb");
-            setShowHint(false);
-            setPlainAnswer("");
-            setTeAnswer("");
-            setNounAnswer("");
-          }}
+          onClick={() => setMode("verb")}
         >
           Ćwicz czasownik
         </button>
@@ -247,13 +261,7 @@ export default function App() {
           className={`px-4 py-2 rounded ${
             mode === "noun" ? "bg-blue-600 text-white" : "bg-gray-200"
           }`}
-          onClick={() => {
-            setMode("noun");
-            setShowHint(false);
-            setPlainAnswer("");
-            setTeAnswer("");
-            setNounAnswer("");
-          }}
+          onClick={() => setMode("noun")}
         >
           Ćwicz rzeczownik
         </button>
@@ -307,7 +315,7 @@ export default function App() {
             setPlainAnswer("");
             setTeAnswer("");
             setNounAnswer("");
-            setCurrent((c) => (c - 1 + sentences.length) % sentences.length);
+            setCurrent((c) => (c - 1 + shuffledIndices.length) % shuffledIndices.length);
           }}
         >
           ← Wstecz
@@ -319,7 +327,7 @@ export default function App() {
             setPlainAnswer("");
             setTeAnswer("");
             setNounAnswer("");
-            setCurrent((c) => (c + 1) % sentences.length);
+            setCurrent((c) => (c + 1) % shuffledIndices.length);
           }}
         >
           Dalej →
