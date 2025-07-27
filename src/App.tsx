@@ -171,7 +171,7 @@ const sentences = [
   },
 ];
 
-// Funkcja do losowego tasowania tablicy (Fisher-Yates)
+// Fisher-Yates shuffle
 function shuffleArray<T>(array: T[]): T[] {
   const copy = [...array];
   for (let i = copy.length - 1; i > 0; i--) {
@@ -193,9 +193,9 @@ export default function App() {
   const [teAnswer, setTeAnswer] = useState("");
   const [nounAnswer, setNounAnswer] = useState("");
 
+  // Reset przy zmianie trybu
   useEffect(() => {
-    const newShuffled = shuffleArray(sentences.map((_, i) => i));
-    setShuffledIndices(newShuffled);
+    setShuffledIndices(shuffleArray(sentences.map((_, i) => i)));
     setCurrent(0);
     setShowHint(false);
     setShowAnswer(false);
@@ -243,65 +243,57 @@ export default function App() {
   };
 
   return (
-    <main
-      className="min-h-screen max-w-xl mx-auto p-4 space-y-6"
-      style={{ backgroundColor: "#f8d7da", fontFamily: "'Sawarabi Mincho', serif" }}
-    >
+    <main className="min-h-screen bg-pink-50 max-w-xl mx-auto p-4 space-y-6 font-sans">
       <img
         src="https://cdn.gaijinpot.com/app/uploads/sites/6/2016/02/Mount-Fuji-New.jpg"
         alt="Fuji"
-        style={{ width: "100%", height: 300, objectFit: "cover", borderRadius: 16, boxShadow: "0 4px 8px rgba(0,0,0,0.2)" }}
+        style={{
+          width: "100%",
+          maxHeight: 300,
+          objectFit: "cover",
+          borderRadius: 16,
+          boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+        }}
         className="mb-4"
       />
-      <h1
-        className="text-3xl font-bold text-center mb-4"
-        style={{ color: "#880e4f", textShadow: "1px 1px 3px rgba(0,0,0,0.3)" }}
-      >
+      <h1 className="text-3xl font-bold text-center text-red-700 drop-shadow-sm select-none mb-4">
         🌸 Doki Doki Rozdział 4 🌸
       </h1>
 
-      {/* Tryb */}
       <div className="flex justify-center gap-6 mb-4">
         <button
-          className={`px-4 py-2 rounded transition`}
-          style={{
-            backgroundColor: mode === "verb" ? "#81d4fa" : "white",
-            color: mode === "verb" ? "white" : "#0277bd",
-            border: mode === "verb" ? "none" : "1px solid #81d4fa",
-          }}
+          className={`px-4 py-2 rounded transition ${
+            mode === "verb"
+              ? "bg-sky-400 text-white hover:bg-sky-500"
+              : "bg-white text-sky-600 border border-sky-400 hover:bg-sky-100"
+          }`}
           onClick={() => setMode("verb")}
         >
           Ćwicz czasownik
         </button>
         <button
-          className={`px-4 py-2 rounded transition`}
-          style={{
-            backgroundColor: mode === "noun" ? "#81d4fa" : "white",
-            color: mode === "noun" ? "white" : "#0277bd",
-            border: mode === "noun" ? "none" : "1px solid #81d4fa",
-          }}
+          className={`px-4 py-2 rounded transition ${
+            mode === "noun"
+              ? "bg-sky-400 text-white hover:bg-sky-500"
+              : "bg-white text-sky-600 border border-sky-400 hover:bg-sky-100"
+          }`}
           onClick={() => setMode("noun")}
         >
           Ćwicz rzeczownik
         </button>
       </div>
 
-      {/* Zdanie */}
-      <div
-        className="p-4 rounded shadow-md text-center"
-        style={{ backgroundColor: "white", color: "black" }}
-      >
+      <div className="bg-white p-6 rounded-lg shadow-md text-center">
         {renderSentence()}
       </div>
 
-      {/* Inputy */}
-      <div className="space-y-4 mt-4">
+      <div className="space-y-4 mt-6">
         {mode === "verb" ? (
           <>
             <input
               type="text"
               placeholder="Forma zwykła (np. のります)"
-              className="w-full p-2 border rounded"
+              className="w-full p-3 border border-gray-300 rounded-md text-lg"
               value={plainAnswer}
               onChange={(e) => setPlainAnswer(e.target.value)}
               spellCheck={false}
@@ -310,7 +302,7 @@ export default function App() {
             <input
               type="text"
               placeholder="Forma て (np. のって)"
-              className="w-full p-2 border rounded"
+              className="w-full p-3 border border-gray-300 rounded-md text-lg"
               value={teAnswer}
               onChange={(e) => setTeAnswer(e.target.value)}
               spellCheck={false}
@@ -321,7 +313,7 @@ export default function App() {
           <input
             type="text"
             placeholder="Rzeczownik z partykułą (np. きょうだいを)"
-            className="w-full p-2 border rounded"
+            className="w-full p-3 border border-gray-300 rounded-md text-lg"
             value={nounAnswer}
             onChange={(e) => setNounAnswer(e.target.value)}
             spellCheck={false}
@@ -330,10 +322,9 @@ export default function App() {
         )}
       </div>
 
-      {/* Nawigacja */}
-      <div className="flex justify-between space-x-4 mt-4">
+      <div className="flex justify-between space-x-4 mt-6">
         <button
-          className="px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-100"
+          className="px-5 py-2 bg-white border border-gray-300 rounded hover:bg-gray-100"
           onClick={() => {
             setShowHint(false);
             setShowAnswer(false);
@@ -346,7 +337,7 @@ export default function App() {
           ← Wstecz
         </button>
         <button
-          className="px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-100"
+          className="px-5 py-2 bg-white border border-gray-300 rounded hover:bg-gray-100"
           onClick={() => {
             setShowHint(false);
             setShowAnswer(false);
@@ -360,28 +351,49 @@ export default function App() {
         </button>
       </div>
 
-      {/* Sprawdź, podpowiedź, odpowiedź */}
-      <div className="space-x-4 mt-6 flex justify-center items-center">
+      <div className="flex justify-center gap-4 mt-6">
         <button
           onClick={checkAnswer}
-          className="px-5 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+          className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700"
         >
           Sprawdź
         </button>
         <button
-          onClick={() => setShowHint(!showHint)}
-          className="px-5 py-2 bg-blue-200 text-blue-800 rounded hover:bg-blue-300"
+          onClick={() => setShowHint((h) => !h)}
+          className="px-6 py-2 bg-blue-200 text-blue-800 rounded hover:bg-blue-300"
         >
           {showHint ? "Ukryj podpowiedź" : "Pokaż podpowiedź"}
         </button>
         <button
-          onClick={() => setShowAnswer(!showAnswer)}
-          className="px-5 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          onClick={() => setShowAnswer((a) => !a)}
+          className="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
           {showAnswer ? "Ukryj odpowiedź" : "Pokaż odpowiedź"}
         </button>
       </div>
 
-      {/* Podpowiedź */}
       {showHint && (
-        <p
+        <p className="mt-6 italic text-center text-gray-700 select-text">{sentence.pl}</p>
+      )}
+
+      {showAnswer && (
+        <div className="mt-4 p-4 bg-gray-100 rounded text-center font-mono select-text">
+          {mode === "verb" ? (
+            <>
+              <p>
+                Forma zwykła: <strong>{sentence.verbPlain}</strong>
+              </p>
+              <p>
+                Forma て: <strong>{sentence.verbTe}</strong>
+              </p>
+            </>
+          ) : (
+            <p>
+              Rzeczownik: <strong>{sentence.noun || "(brak)"}</strong>
+            </p>
+          )}
+        </div>
+      )}
+    </main>
+  );
+}
