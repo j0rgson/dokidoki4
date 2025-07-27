@@ -1,5 +1,3 @@
-/* App.css */
-
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
 
 body, html {
@@ -28,9 +26,11 @@ body, html {
 
 .banner {
   width: 100%;
-  height: auto;
+  height: 300px;  /* wymuszona wysokość */
+  object-fit: cover;
   border-radius: 12px;
   margin-bottom: 16px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 .subtitle {
@@ -47,9 +47,19 @@ body, html {
   align-items: center;
 }
 
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #880e4f;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+
 .question {
   font-size: 24px;
   margin: 20px 0;
+  font-weight: 700;
+  color: black;
 }
 
 .input {
@@ -63,36 +73,75 @@ body, html {
   transition: all 0.2s ease;
 }
 
-.hint-button,
-.action-button,
-.test-button,
-.music-button {
-  margin: 10px;
+.buttons-row {
+  display: flex;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.button-primary {
   padding: 10px 20px;
   font-size: 16px;
   border: none;
   border-radius: 8px;
+  cursor: pointer;
   background-color: #007bff;
   color: white;
-  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
-.hint-button:hover,
-.action-button:hover,
-.test-button:hover,
-.music-button:hover {
+.button-primary:hover {
   background-color: #0056b3;
+}
+
+.button-secondary {
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #007bff;
+  background-color: white;
+  color: #007bff;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.button-secondary:hover {
+  background-color: #cce5ff;
+}
+
+.button-active {
+  background-color: #81d4fa;
+  color: white;
+  border: none !important;
+}
+
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 600px;
+  margin-top: 20px;
+}
+
+.navigation-buttons button {
+  flex: 1;
+  margin: 0 10px;
 }
 
 .hint {
   font-size: 16px;
   color: #333;
   margin: 10px 0;
+  font-style: italic;
 }
 
 .answer {
   margin-top: 20px;
   font-size: 18px;
+  font-family: monospace;
+  background-color: #f1f1f1;
+  padding: 10px;
+  border-radius: 8px;
 }
 
 .correct {
@@ -120,4 +169,3 @@ body, html {
   75% { transform: translateX(-5px); }
   100% { transform: translateX(0); }
 }
-
