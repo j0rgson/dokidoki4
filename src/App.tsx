@@ -188,6 +188,7 @@ export default function App() {
   );
   const [current, setCurrent] = useState(0);
   const [showHint, setShowHint] = useState(false);
+  const [showAnswer, setShowAnswer] = useState(false);
   const [plainAnswer, setPlainAnswer] = useState("");
   const [teAnswer, setTeAnswer] = useState("");
   const [nounAnswer, setNounAnswer] = useState("");
@@ -198,6 +199,7 @@ export default function App() {
     setShuffledIndices(newShuffled);
     setCurrent(0);
     setShowHint(false);
+    setShowAnswer(false);
     setPlainAnswer("");
     setTeAnswer("");
     setNounAnswer("");
@@ -218,6 +220,7 @@ export default function App() {
       const nounOk = nounAnswer.trim() === sentence.noun;
       alert(`Rzeczownik: ${nounOk ? "✔️" : "❌"}`);
     }
+    setShowAnswer(false);
   };
 
   // Render zdania z ukrytym czasownikiem lub rzeczownikiem
@@ -306,12 +309,13 @@ export default function App() {
         )}
       </div>
 
-      {/* Przyciski */}
+      {/* Przyciski nawigacyjne */}
       <div className="flex justify-between space-x-4 mt-4">
         <button
           className="px-4 py-2 border rounded hover:bg-gray-100"
           onClick={() => {
             setShowHint(false);
+            setShowAnswer(false);
             setPlainAnswer("");
             setTeAnswer("");
             setNounAnswer("");
@@ -324,6 +328,7 @@ export default function App() {
           className="px-4 py-2 border rounded hover:bg-gray-100"
           onClick={() => {
             setShowHint(false);
+            setShowAnswer(false);
             setPlainAnswer("");
             setTeAnswer("");
             setNounAnswer("");
@@ -334,7 +339,7 @@ export default function App() {
         </button>
       </div>
 
-      {/* Sprawdź i podpowiedź */}
+      {/* Sprawdź, podpowiedź i pokaż odpowiedź */}
       <div className="space-x-4 mt-6 flex justify-center items-center">
         <button
           onClick={checkAnswer}
@@ -348,10 +353,31 @@ export default function App() {
         >
           {showHint ? "Ukryj podpowiedź" : "Pokaż podpowiedź"}
         </button>
+        <button
+          onClick={() => setShowAnswer(!showAnswer)}
+          className="px-5 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          {showAnswer ? "Ukryj odpowiedź" : "Pokaż odpowiedź"}
+        </button>
       </div>
 
+      {/* Podpowiedź */}
       {showHint && (
         <p className="mt-4 italic text-center text-gray-700">{sentence.pl}</p>
+      )}
+
+      {/* Poprawna odpowiedź */}
+      {showAnswer && (
+        <div className="mt-4 p-4 bg-gray-100 rounded text-center font-mono">
+          {mode === "verb" ? (
+            <>
+              <p>Forma zwykła: <strong>{sentence.verbPlain}</strong></p>
+              <p>Forma て: <strong>{sentence.verbTe}</strong></p>
+            </>
+          ) : (
+            <p>Rzeczownik: <strong>{sentence.noun || "(brak)"}</strong></p>
+          )}
+        </div>
       )}
     </main>
   );
